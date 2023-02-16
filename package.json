@@ -4,6 +4,7 @@
   "description": "Chess with new rules.",
   "main": "index.js",
   "dependencies": {
+    "@chrisoakman/chessboardjs": "^1.0.0",
     "acorn": "^8.8.2",
     "acorn-import-assertions": "^1.8.0",
     "ajv": "^6.12.6",
@@ -12,6 +13,7 @@
     "buffer-from": "^1.1.2",
     "caniuse-lite": "^1.0.30001452",
     "chess.js": "^1.0.0-beta.3",
+    "chessjs": "^0.0.1",
     "chrome-trace-event": "^1.0.3",
     "clone-deep": "^4.0.1",
     "colorette": "^2.0.19",
@@ -42,6 +44,7 @@
     "isexe": "^2.0.0",
     "isobject": "^3.0.1",
     "jest-worker": "^27.5.1",
+    "jquery": "^3.6.3",
     "json-parse-even-better-errors": "^2.3.1",
     "json-schema-traverse": "^0.4.1",
     "kind-of": "^6.0.3",
