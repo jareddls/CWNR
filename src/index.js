@@ -2,22 +2,34 @@ import { Chess } from 'chess.js'
 
 const chess = new Chess()
 
-while (!chess.isGameOver()) {
-  const moves = chess.moves()
-  const move = moves[Math.floor(Math.random() * moves.length)]
-  chess.move(move)
+let fen = ''
+var board = Chessboard('myBoard')
+
+const timer = ms => new Promise(res => setTimeout(res, ms))
+
+async function PlayARandomChessGame(){
+  while (!chess.isGameOver()) {
+    const moves = chess.moves()
+    const move = moves[Math.floor(Math.random() * moves.length)]
+    chess.move(move)
+    fen = chess.fen()
+    board.position(fen)
+    console.log(fen)
+    await timer(1000)
+  }
 }
-console.log(chess.pgn())
-let fen = chess.fen()
-let fen2 = "pppppppp/8/8/2k5/8/8/7K/8 w - - 0 206"
-console.log(fen)
+
+
+
+
+PlayARandomChessGame()
 
 //chessboard.js
 // NOTE: this example uses the chess.js library:
 // https://github.com/jhlywa/chess.js
 
-var board = Chessboard('myBoard')
-board.position(fen)
+// var board = Chessboard('myBoard')
+// board.position(fen)
 
 
 // var board = null
