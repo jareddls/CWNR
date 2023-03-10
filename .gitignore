@@ -1,4 +1,4 @@
 node_modules
 .vscode/settings.json
 .DS_Store
-*_wp.js
+dist/webpack_bundled/*_wp.js
