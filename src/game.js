@@ -1,33 +1,21 @@
-// All of it is a copy from demo.js
 import { Chess } from 'chess.js'
 
 const chess = new Chess()
 
-// let fen = ''
-// let pgn = ''
-// var board = Chessboard('myBoard', {
-//     draggable: true,
-//     position: 'start',
-//     onDrop: onDrop,
-// });
-
-// let fen = 'rnb1k2r/3p4/ppP3p1/5pBp/2Pb1P2/NP4P1/P2QP2P/R3KBNR b KQk - 0 19'
-// let pgn = ''
 var board = Chessboard('myBoard', {
     draggable: true,
+    dropOffBoard: 'snapback',
     onDrop: onDrop,
-    position: 'start'
+    onDragStart: onDragStart,
+    orientation: 'white',
+    position: 'start',
+    onSnapEnd: function() {
+        board.position(chess.fen());
+      }
 })
 
-board.position()
-
-// while (!chess.isGameOver()) {
-//     const moves = chess.moves()
-//     board.position(fen)
-// }
-
 function onDrop(source, target) {
-    const move = game.move({
+    const move = chess.move({
       from: source,
       to: target,
       promotion: 'q' // always promote to a queen for simplicity
@@ -35,156 +23,41 @@ function onDrop(source, target) {
   
     if (move === null) return 'snapback';
   
+    //updates it with the fen so that we can see the board update when we drop the piece
+    board.position(chess.fen());
+
     updateStatus();
   }
   
-  function updateStatus() {
+function onDragStart(source, piece, position, orientation) {
+    // do not allow to pick up opponent's pieces
+    if (chess.turn() === 'w' && piece.search(/^b/) !== -1) {
+        return false;
+    } else if (chess.turn() === 'b' && piece.search(/^w/) !== -1) {
+        return false;
+    }
+}
+
+function updateStatus() {
     let status = '';
-  
+
     let moveColor = 'White';
     if (game.turn() === 'b') {
-      moveColor = 'Black';
+        moveColor = 'Black';
     }
-  
+
     if (game.in_checkmate()) {
-      status = 'Game over, ' + moveColor + ' is in checkmate.';
+        status = 'Game over, ' + moveColor + ' is in checkmate.';
     } else if (game.in_draw()) {
-      status = 'Game over, drawn position';
+        status = 'Game over, drawn position';
     } else {
-      status = moveColor + ' to move';
-  
-      if (game.in_check()) {
+        status = moveColor + ' to move';
+
+        if (game.in_check()) {
         status += ', ' + moveColor + ' is in check';
-      }
+        }
     }
-  
-    document.getElementById('status').innerHTML = status;
-  }
-  
+
+document.getElementById('status').innerHTML = status;
+}
 // const timer = ms => new Promise(res => setTimeout(res, ms))
-
-// async function PlayARandomChessGame(){
-//   while (!chess.isGameOver()) {
-//     const moves = chess.moves()
-//     const move = moves[Math.floor(Math.random() * moves.length)]
-//     chess.move(move)
-//     fen = chess.fen()
-//     pgn = chess.pgn()
-//     board.position(fen)
-//     console.log(fen)
-//     await timer(1000)
-
-//     if (chess.isCheckmate()){
-//       document.getElementById("status").innerHTML = "Status: Checkmate" 
-//     }
-//     else if (chess.isDraw()){
-//       document.getElementById("status").innerHTML = "Status: Draw"
-//     }
-//     else if (chess.isInsufficientMaterial() || chess.isThreefoldRepetition() || chess.isStalemate()){
-//       document.getElementById("status").innerHTML = "Status: Stalemate"
-//     }
-//     else if (chess.inCheck()){
-//       document.getElementById("status").innerHTML = "Status: In Check"
-//     }
-//     else{
-//       document.getElementById("status").innerHTML = "Status: Neutral"
-//     }
-
-//     document.getElementById("fen").innerHTML = "FEN: " + fen
-//     document.getElementById("pgn").innerHTML = "PGN: " + pgn
-//   }
-// }
-
-
-
-
-// PlayARandomChessGame()
-
-//chessboard.js
-// NOTE: this example uses the chess.js library:
-// https://github.com/jhlywa/chess.js
-
-// var board = Chessboard('myBoard')
-// board.position(fen)
-
-
-// var board = null
-// var game = new Chess()
-// var $status = $('#status')
-// var $fen = $('#fen')
-// var $pgn = $('#pgn')
-
-// function onDragStart (source, piece, position, orientation) {
-//   // do not pick up pieces if the game is over
-//   if (game.game_over()) return false
-
-//   // only pick up pieces for the side to move
-//   if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-//       (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-//     return false
-//   }
-// }
-
-// function onDrop (source, target) {
-//   // see if the move is legal
-//   var move = game.move({
-//     from: source,
-//     to: target,
-//     promotion: 'q' // NOTE: always promote to a queen for example simplicity
-//   })
-
-//   // illegal move
-//   if (move === null) return 'snapback'
-
-//   updateStatus()
-// }
-
-// // update the board position after the piece snap
-// // for castling, en passant, pawn promotion
-// function onSnapEnd () {
-//   board.position(game.fen())
-// }
-
-// function updateStatus () {
-//   var status = ''
-
-//   var moveColor = 'White'
-//   if (game.turn() === 'b') {
-//     moveColor = 'Black'
-//   }
-
-//   // checkmate?
-//   if (game.in_checkmate()) {
-//     status = 'Game over, ' + moveColor + ' is in checkmate.'
-//   }
-
-//   // draw?
-//   else if (game.in_draw()) {
-//     status = 'Game over, drawn position'
-//   }
-
-//   // game still on
-//   else {
-//     status = moveColor + ' to move'
-
-//     // check?
-//     if (game.in_check()) {
-//       status += ', ' + moveColor + ' is in check'
-//     }
-//   }
-
-//   $status.html(status)
-//   $fen.html(game.fen())
-//   $pgn.html(game.pgn())
-// }
-
-// var config = {
-//   draggable: true,
-//   position: 'start',
-//   onDragStart: onDragStart,
-//   onDrop: onDrop,
-//   onSnapEnd: onSnapEnd
-// }
-// board = Chessboard('myBoard', config)
-
-// updateStatus()
