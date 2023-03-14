@@ -18,7 +18,7 @@
       crossorigin="anonymous">
     </script>
     
-    <script src="game.js"></script> 
+    <script type="module" src="./webpack_bundled/game_wp.js"></script> 
 
     <style>
       .centered {
@@ -28,23 +28,16 @@
         transform: translate(-50%, -50%);
       }
     </style>
-    <title>Demo Chess Game</title>
+    <title>1v1 Chess Game</title>
   </head>
 
     <body> 
-        <!-- <div id="board1" style="width: 400px"></div> -->
-        <div class="centered">
-          <div id="myBoard" style="width: 400px"></div>
-        </div>
-
-        <div>
-          <label id="status">Status: </label>
-          <br>
-          <label id="fen">FEN: </label>
-          <!-- <div id="fen"></div> -->
-          <br>
-          <label id="pgn">PGN: </label>
-        </div>
+      <div id="myBoard" style="width: 600px"></div>
+      <label id="status">Status:</label>
+      <br>
+      <label id="fen">FEN:</label>
+      <br>
+      <label id="pgn">PGN:</label>
         
     </body>
       <script src="./webpack_bundled/game_wp.js"></script>
