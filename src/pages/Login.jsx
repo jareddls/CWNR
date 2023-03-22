@@ -18,8 +18,23 @@ class login extends React.Component {
         this.setState({loginPassword: event.target.value})
     }
 
-    onSubmitSignin = () => {
+    onSubmitLogin = () => {
         console.log(this.state)
+        fetch('http://localhost:3000/login', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: this.state.loginEmail,
+                password: this.state.loginPassword
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data === "logged in") {
+              window.location.href = "/home"
+            }
+        })
+        // window.location.href = "/home"
     }
 
     render() {
@@ -55,6 +70,7 @@ class login extends React.Component {
                                                     <h4 className="mb-4 pb-3">Log In</h4>
                                                     <div className="form-group">
                                                         <input
+                                                            onChange={this.onEmailChange}
                                                             type="email"
                                                             className="form-style"
                                                             placeholder="Email"
@@ -63,13 +79,14 @@ class login extends React.Component {
                                                     </div>
                                                     <div className="form-group mt-2">
                                                         <input
+                                                            onChange={this.onPasswordChange}
                                                             type="password"
                                                             className="form-style"
                                                             placeholder="Password"
                                                         />
                                                         <i className="input-icon uil uil-lock-alt" />
                                                     </div>
-                                                    <a href="home" className="btn mt-4">
+                                                    <a onClick={this.onSubmitLogin} className="btn mt-4">
                                                         Login
                                                     </a>
                                                     <p className="mb-0 mt-4 text-center">

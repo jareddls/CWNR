@@ -37,9 +37,9 @@ app.listen(3000, ()=> {
 
 
 app.post('/login', (req, res) => {
-    res.json("logged in")
-    if (req.body.email == database.users[0].email && req.body.password == database.users[0].password) {
-        res.json("success logging in ")
+    const { email, password } = req.body
+    if (email == database.users[0].email && password == database.users[0].password) {
+        res.json("logged in")
     } else {
          res.status(400).json("error logging in")
     }
