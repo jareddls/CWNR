@@ -254,7 +254,7 @@ const homepage = () => {
                   </a>
                   <br />
                   <div className="circular_image">
-                    <img src="../src/assets/pfp/jdls.jpg" />
+                    <img src="/assets/pfp/jdls.jpg" />
                   </div>
                   <br />
                   <p className="card-text">
