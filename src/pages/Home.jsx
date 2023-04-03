@@ -1,12 +1,13 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
+import Button from '../components/Button'
 
 const home = () => {
   return (
     <div className='centered'>
-      <Link to='/game'> MANUAL GAME</Link>
-      <br/>
-      <Link to='/demo'> DEMO GAME</Link>
+      <Button text="MANUAL GAME" url="/game"/>
+      <Button text="DEMO GAME" url="/demo"/>
+      <Button text="CREATE CUSTOM GAME" url="/custom"/>
     </div>
   )
 }
