@@ -1,8 +1,10 @@
 import React from 'react'
+import Navbar from '../components/Navbar'
 
 const homepage = () => {
   return (
     <>
+      <Navbar/>
       {/* Required meta tags */}
       <meta charSet="utf-8" />
       <meta
@@ -11,7 +13,7 @@ const homepage = () => {
       />
       <title>[PLACEHOLDER NAME] - A New Way To Play</title>
       <meta name="description" content="CWNR is a brand new way to play chess." />
-    
+
       {/*hero header*/}
       <section className="py-7 py-md-0 bg-hero" id="home">
         <div className="container">

@@ -10,13 +10,10 @@ import Custom from './pages/Custom'
 import Host from './pages/Host'
 import Recovery from './pages/Recovery'
 
-import Navbar from './components/Navbar'
-
 // if you want something on every page add here
 const App = () => {
   return (
     <BrowserRouter>
-      <Navbar/>
 
       <Routes>
         {/* default */}
