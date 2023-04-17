@@ -33,6 +33,7 @@ const login = () => {
 
     //<h4> User Logged In: </h4>
     //{user?.email}
+    let loggedIn = false;
     const log_in = async () => {
         try {
             const user = await signInWithEmailAndPassword(
@@ -41,8 +42,11 @@ const login = () => {
                 loginPassword
             );
             console.log(user)
+            loggedIn = true;
+            window.location.href = "home"
         } catch (error) {
             console.log(error.message);
+            loggedIn = false;
         }
     };
 
@@ -61,6 +65,7 @@ const login = () => {
 
     const logout = async () => {
         await signOut(auth);
+        loggedIn = false;
     };
     //<button onClick={logout}> Sign Out </button>
 
