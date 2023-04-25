@@ -4,6 +4,11 @@ import { Chess } from "chess.js"; // import Chess from  "chess.js"(default) if r
 
 import Chessboard from "chessboardjsx";
 
+
+// a class that extends a component is a way to create a reusable component that encapusulates some state and behavior logic
+// can define the component's behavior by overriding the base methods of the React.Component class
+// can import this into another component or the main aplication file and include it as a JSX element, and can also
+// pass the data to the component via props and respond to events using callbacks
 class HumanVsHuman extends Component {
   static propTypes = { children: PropTypes.func };
 
@@ -17,10 +22,11 @@ class HumanVsHuman extends Component {
     pieceSquare: "",
     // currently clicked square
     square: "",
-    // array of past game moves
+    // array of past game moves, looks like it's a stack, so the last move will be at the top of the history stack
     history: []
   };
 
+  // overrides a base method of the React.Component class, with componentDidMount()
   componentDidMount() {
     this.game = new Chess();
   }
@@ -58,7 +64,8 @@ class HumanVsHuman extends Component {
       squareStyles: { ...squareStyles, ...highlightStyles }
     }));
   };
-
+  
+  // when moving a piece, when you drop it, check if the move created is legal
   onDrop = ({ sourceSquare, targetSquare }) => {
     // see if the move is legal
     let move = this.game.move({
@@ -69,15 +76,17 @@ class HumanVsHuman extends Component {
 
     // illegal move
     if (move === null) return;
+
+    // since the move is legal, update the fen, history, and squareStyles
     this.setState(({ history, pieceSquare }) => ({
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history })
     }));
   };
-
+  
+  // when the mouse is over a square, get the possible moves for that square
   onMouseOverSquare = square => {
-    // get list of possible moves for this square
     let moves = this.game.moves({
       square: square,
       verbose: true
@@ -86,6 +95,7 @@ class HumanVsHuman extends Component {
     // exit if there are no moves available for this square
     if (moves.length === 0) return;
 
+    // create an array to hold the squares to highlights, iterate through moves and add those to squaresToHighlight
     let squaresToHighlight = [];
     for (var i = 0; i < moves.length; i++) {
       squaresToHighlight.push(moves[i].to);
@@ -93,7 +103,8 @@ class HumanVsHuman extends Component {
 
     this.highlightSquare(square, squaresToHighlight);
   };
-
+  
+  // i guess when the mouse stops hovering a square, remove the highlight
   onMouseOutSquare = square => this.removeHighlightSquare(square);
 
   // central squares get diff dropSquareStyles
@@ -105,34 +116,40 @@ class HumanVsHuman extends Component {
           : { boxShadow: "inset 0 0 1px 4px rgb(255, 255, 0)" }
     });
   };
-
+  // when you click on a square
   onSquareClick = square => {
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
       pieceSquare: square
     }));
 
+    // choose a move to play, from square to square
     let move = this.game.move({
       from: this.state.pieceSquare,
       to: square,
       promotion: "q" // always promote to a queen for example simplicity
     });
 
-    // illegal move
+    // if it's an illegal move, don't allow it
     if (move === null) return;
 
+    // since it's legal, update the fen, update the history
     this.setState({
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
       pieceSquare: ""
     });
   };
-
+  
+  // when right clicking a square, highlight it to be a color
   onSquareRightClick = square =>
     this.setState({
       squareStyles: { [square]: { backgroundColor: "deepPink" } }
     });
-
+  
+  // render is a method of a React component, which takes in a set of properties(props)
+  // that include children, fen, dropSquareStyle, and squareStyles
+  // the render method returns the result of of calling the 'children' function, essentially creating the chessboard UI
   render() {
     const { fen, dropSquareStyle, squareStyles } = this.state;
 
