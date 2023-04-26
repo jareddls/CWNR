@@ -27,6 +27,9 @@ class HumanVsHuman extends Component {
   };
 
   // overrides a base method of the React.Component class, with componentDidMount()
+  // pretty much is a good time to fetch data from an API, ig in this case it's getting new game info
+  // the idea of componentDidMount is that it's good for any type of setup / initialization
+  // examples: fetching data from an API, subscribing to a socket, setting up event listeners
   componentDidMount() {
     this.game = new Chess();
   }
