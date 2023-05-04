@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import { useState } from 'react'
 import { 
     createUserWithEmailAndPassword,
@@ -7,6 +7,8 @@ import {
     signOut
 } from 'firebase/auth'
 import { auth } from '../firebase'
+
+
 const login = () => {
 
     const [registerEmail, setRegisterEmail] = useState("");
@@ -33,23 +35,22 @@ const login = () => {
 
     //<h4> User Logged In: </h4>
     //{user?.email}
-    let loggedIn = false;
-    const log_in = async () => {
-        try {
-            const user = await signInWithEmailAndPassword(
-                auth,
-                loginEmail, 
-                loginPassword
-            );
-            console.log(user)
-            loggedIn = true;
-            window.location.href = "home"
-        } catch (error) {
-            console.log(error.message);
-            loggedIn = false;
-        }
-    };
 
+
+
+    
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
+    // this is to check the IsLoggedIn value immediately
+    useEffect(() => {
+        console.log("isLoggedIn changed to", isLoggedIn);
+      }, [isLoggedIn]);
+
+    // this actually does the log in logic
+
+    
+    
     const register = async () => {
         try {
             const user = await createUserWithEmailAndPassword(
@@ -63,9 +64,26 @@ const login = () => {
         }
     };
 
+
+    const log_in = async () => {
+        try {
+            const user = await signInWithEmailAndPassword(
+                auth,
+                loginEmail, 
+                loginPassword
+            );
+            console.log(user)
+            setIsLoggedIn(true);
+            // window.location.href = "home"
+        } catch (error) {
+            console.log(error.message);
+            setIsLoggedIn(false);
+        }
+    };
+
     const logout = async () => {
         await signOut(auth);
-        loggedIn = false;
+        setIsLoggedIn(false);
     };
     //<button onClick={logout}> Sign Out </button>
 
@@ -177,3 +195,58 @@ const login = () => {
 }
 
 export default login
+
+const Login = ({ setIsLoggedIn }) => {
+    const log_in = async () => {
+      try {
+        const user = await signInWithEmailAndPassword(
+          auth,
+          loginEmail, 
+          loginPassword
+        );
+        console.log(user);
+        setIsLoggedIn(true);
+        window.location.href = "home";
+      } catch (error) {
+        console.log(error.message);
+        setIsLoggedIn(false);
+      }
+    };
+  
+    return (
+      <div className="section text-center">
+        <h4 className="mb-4 pb-3">Log In</h4>
+        <div className="form-group">
+          <input
+            onChange={(event) => { 
+              setLoginEmail(event.target.value);
+            }}
+            type="email"
+            className="form-style"
+            placeholder="Email"
+          />
+          <i className="input-icon uil uil-at" />
+        </div>
+        <div className="form-group mt-2">
+          <input
+            onChange={(event) => { 
+              setLoginPassword(event.target.value);
+            }}
+            type="password"
+            className="form-style"
+            placeholder="Password"
+          />
+          <i className="input-icon uil uil-lock-alt" />
+        </div>
+        <button onClick={log_in} className="btn mt-4">
+          Login
+        </button>
+        <p className="mb-0 mt-4 text-center">
+          <a href="recovery" className="link">
+            Forgot your password?
+          </a>
+        </p>
+      </div>
+    );
+  };
+  
