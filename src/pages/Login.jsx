@@ -39,17 +39,6 @@ const login = () => {
 
 
     
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-
-    // this is to check the IsLoggedIn value immediately
-    useEffect(() => {
-        console.log("isLoggedIn changed to", isLoggedIn);
-      }, [isLoggedIn]);
-
-    // this actually does the log in logic
-
-    
     
     const register = async () => {
         try {
@@ -73,17 +62,17 @@ const login = () => {
                 loginPassword
             );
             console.log(user)
-            setIsLoggedIn(true);
-            // window.location.href = "home"
+            localStorage.setItem('isLoggedIn', true);
+            window.location.href = "home"
         } catch (error) {
             console.log(error.message);
-            setIsLoggedIn(false);
+            localStorage.setItem('isLoggedIn', false);
         }
     };
 
     const logout = async () => {
         await signOut(auth);
-        setIsLoggedIn(false);
+        localStorage.setItem('isLoggedIn', false);
     };
     //<button onClick={logout}> Sign Out </button>
 

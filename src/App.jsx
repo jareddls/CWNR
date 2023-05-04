@@ -1,5 +1,4 @@
 // rafce
-import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
@@ -16,8 +15,6 @@ import PrivateRoute from './util/PrivateRoute'
 
 const App = () => {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   return (
     <BrowserRouter>
 
@@ -26,10 +23,10 @@ const App = () => {
         {/* default */}
         <Route path = '/' element = {<Landing/>} />
 
-        <Route path = '/login' element = {<Login setIsLoggedIn={setIsLoggedIn}/>} />
+        <Route path = '/login' element = {<Login/>}/>
 
         {/* private routes */}
-        <Route element={<PrivateRoute isLoggedIn={isLoggedIn}/>}>
+        <Route element={<PrivateRoute/>}>
               <Route path="/home" element={<Home/>} />
         </Route>
 

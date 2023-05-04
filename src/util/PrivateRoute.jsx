@@ -1,11 +1,20 @@
 import { Outlet, Navigate } from 'react-router-dom'
 
-const PrivateRoute = ({ isLoggedIn }) => {
-    let auth = {'token':false}
+const PrivateRoute = () => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    console.log("isLoggedIn is", typeof isLoggedIn)
 
-    console.log("PrivateRoute isLoggedIn is", isLoggedIn)
+    let isLoggedInBool;
+
+    if (isLoggedIn == "true") {
+        isLoggedInBool = true;
+    }
+    else {
+        isLoggedInBool = false;
+    }
+
     return(
-        isLoggedIn ? <Outlet/> : <Navigate to="/login"/>
+        isLoggedInBool ? <Outlet/> : <Navigate to="/login"/>
     )
 }
 
