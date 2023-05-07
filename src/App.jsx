@@ -5,7 +5,7 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import Demo from './pages/Demo'
 import Game from './pages/Game'
-// import BackrankBattle from './pages/BackrankBattle'
+import BackrankBattle from './pages/BackrankBattle'
 import Custom from './pages/Custom'
 import Host from './pages/Host'
 import Recovery from './pages/Recovery'
@@ -35,7 +35,7 @@ const App = () => {
 
         <Route path = '/game' element = {<Game/>} />
 
-        {/* <Route path = '/bb' element = {<BackrankBattle/>} /> */}
+        <Route path = '/bb' element = {<BackrankBattle/>} />
 
         <Route path = '/custom' element = {<Custom/>} />
         

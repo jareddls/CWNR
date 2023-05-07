@@ -4,6 +4,8 @@ import { Chess } from "chess.js"; // import Chess from  "chess.js"(default) if r
 
 import Chessboard from "chessboardjsx";
 
+/*
+
 let spendable = 31
 let n, b, N, B = 3
 let r, R = 5
@@ -41,6 +43,8 @@ console.log(whiteValue)
 
 var chooseBackrankBlack = prompt("Give me a valid backrank fen string.\n You have 31 points.\nn = 3\nb = 3\nr = 5\nq = 9\nExample:\n4k3")
 
+*/
+
 // let positionString_black = "rnbqkbnr/pppppppp/8/8";
 // let positionString_white = "/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
 // const regex = /^[rnbqkpRNBQKP]+/;
@@ -64,13 +68,14 @@ var chooseBackrankBlack = prompt("Give me a valid backrank fen string.\n You hav
 //we'll give the players a point limit
 //will be fine with empty spaces (hopefully)
 
+
+
 // a class that extends a component is a way to create a reusable component that encapusulates some state and behavior logic
 // can define the component's behavior by overriding the base methods of the React.Component class
 // can import this into another component or the main aplication file and include it as a JSX element, and can also
 // pass the data to the component via props and respond to events using callbacks
 class HumanVsHuman extends Component {
   static propTypes = { children: PropTypes.func };
-
   state = {
     //uses actual fen strings
     fen: "start",
@@ -92,6 +97,60 @@ class HumanVsHuman extends Component {
   // examples: fetching data from an API, subscribing to a socket, setting up event listeners
   componentDidMount() {
     this.game = new Chess();
+  }
+
+  updateFen = () => {
+    // so if rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 is the goal, im gonna try to split up the parts and then concatenate them
+    // back together at the end
+
+    const points = {
+      'b': 3,
+      'r': 5,
+      'q': 9,
+      'n': 3,
+    };
+    
+    let whitePoints = 0
+    let blackPoints = 0
+
+    let blackBackrank = prompt("Enter black backrank:")
+    const afterBlack = "/pppppppp/8/8/8/8/PPPPPPPP/"
+    let whiteBackrank = prompt("Enter white backrank:")
+    const afterWhite = " w KQkq - 0 1"
+
+
+    for (let i = 0; i < blackBackrank.length; i++) {
+      const piece = blackBackrank[i].toLowerCase();
+      
+      if (piece in points) {
+        blackPoints += points[piece];
+      }
+    }
+
+    for (let i = 0; i < whiteBackrank.length; i++) {
+      const piece = whiteBackrank[i].toLowerCase();
+      
+      if (piece in points) {
+        whitePoints += points[piece];
+      }
+    }
+
+    console.log("black points: " + blackPoints)
+    console.log("white points: " + whitePoints)
+
+    if (blackPoints > 32) {
+      blackBackrank = "8"
+    }
+
+    if (whitePoints > 32) {
+      whiteBackrank = "8"
+    }
+
+
+    let createdFenString = blackBackrank + afterBlack + whiteBackrank + afterWhite
+
+    this.setState({ fen: createdFenString });
+    this.game = new Chess(createdFenString);
   }
 
   // keep clicked square style and remove hint squares
@@ -215,18 +274,23 @@ class HumanVsHuman extends Component {
   // the render method returns the result of of calling the 'children' function, essentially creating the chessboard UI
   render() {
     const { fen, dropSquareStyle, squareStyles } = this.state;
-
-    return this.props.children({
-      squareStyles,
-      position: fen,
-      onMouseOverSquare: this.onMouseOverSquare,
-      onMouseOutSquare: this.onMouseOutSquare,
-      onDrop: this.onDrop,
-      dropSquareStyle,
-      onDragOverSquare: this.onDragOverSquare,
-      onSquareClick: this.onSquareClick,
-      onSquareRightClick: this.onSquareRightClick
-    });
+  
+    return (
+      <>
+        <button onClick={this.updateFen}>Update backranks</button>
+        {this.props.children({
+          squareStyles,
+          position: fen,
+          onMouseOverSquare: this.onMouseOverSquare,
+          onMouseOutSquare: this.onMouseOutSquare,
+          onDrop: this.onDrop,
+          dropSquareStyle,
+          onDragOverSquare: this.onDragOverSquare,
+          onSquareClick: this.onSquareClick,
+          onSquareRightClick: this.onSquareRightClick
+        })}
+      </>
+    );
   }
 }
 
