@@ -19,27 +19,27 @@ class HumanVsHuman extends Component {
   componentDidMount() {
     this.game = new Chess();
     //dont change
-    // this.socket = io('http://localhost:3000');
+    this.socket = io('http://localhost:3000');
 
-    // const urlParams = new URLSearchParams(window.location.search);
-    // const roomCode = urlParams.get('roomCode');
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get('roomCode');
     
-    // this.socket.on('connect', () => {
-    //   this.socket.emit('joinRoom', roomCode);
-    // });
+    this.socket.on('connect', () => {
+      this.socket.emit('joinRoom', roomCode);
+    });
 
-    // this.socket.on('move', (move) => {
-    //   const { from, to } = move;
-    //   const moveResult = this.game.move({ from, to });
+    this.socket.on('move', (move) => {
+      const { from, to } = move;
+      const moveResult = this.game.move({ from, to });
   
-    //   if (moveResult) {
-    //     this.setState({
-    //       fen: this.game.fen(),
-    //       history: this.game.history({ verbose: true }),
-    //       squareStyles: squareStyling({ pieceSquare: "", history: this.game.history({ verbose: true }) })
-    //     });
-    //   }
-    // });
+      if (moveResult) {
+        this.setState({
+          fen: this.game.fen(),
+          history: this.game.history({ verbose: true }),
+          squareStyles: squareStyling({ pieceSquare: "", history: this.game.history({ verbose: true }) })
+        });
+      }
+    });
   }
 
   updateFen = () => {
@@ -142,9 +142,9 @@ class HumanVsHuman extends Component {
       squareStyles: squareStyling({ pieceSquare, history })
     }));
  
-    // console.log("doing an emit")
-    // this.socket.emit('move', { from: sourceSquare, to: targetSquare, roomCode });
-    // this.socket.to(roomCode).emit('move', { from: sourceSquare, to: targetSquare, roomCode });
+    console.log("doing an emit")
+    this.socket.emit('move', { from: sourceSquare, to: targetSquare, roomCode });
+    this.socket.to(roomCode).emit('move', { from: sourceSquare, to: targetSquare, roomCode });
     
   };
 
