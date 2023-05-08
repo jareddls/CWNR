@@ -176,6 +176,10 @@ class HumanVsHuman extends Component {
   };
 
   onSquareClick = square => {
+    console.log("yo")
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get('roomCode');
+    
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
       pieceSquare: square
@@ -195,8 +199,8 @@ class HumanVsHuman extends Component {
       pieceSquare: ""
     });
 
-    this.socket.emit('move', { from: this.state.pieceSquare, to: square });
-    this.socket.to(roomCode).emit('move', { from: this.state.pieceSquare, to: square })
+    this.socket.emit('move', { from: this.state.pieceSquare, to: square, roomCode });
+    this.socket.to(roomCode).emit('move', { from: this.state.pieceSquare, to: square, roomCode })
   };
 
   onSquareRightClick = square =>

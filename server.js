@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
   }) 
 
   socket.on('move', (move) => {
-    console.log("called?")
+    // console.log("called?")
     const { from, to, roomCode } = move;
     io.to(roomCode).emit('move', { from, to });
   });
