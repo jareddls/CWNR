@@ -8,7 +8,7 @@ import Game from './pages/Game'
 import BackrankBattle from './pages/BackrankBattle'
 import Custom from './pages/Custom'
 import Host from './pages/Host'
-import Recovery from './pages/Recovery'
+import TestingSocket from './pages/TestingSocket'
 import PrivateRoute from './util/PrivateRoute'
 
 // if you want something on every page add here
@@ -40,6 +40,8 @@ const App = () => {
         <Route path = '/custom' element = {<Custom/>} />
         
         <Route path = '/host' element = {<Host/>} />
+
+        <Route path = '/ts' element = {<TestingSocket/>} />
       </Routes>
 
     </BrowserRouter>

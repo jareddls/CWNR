@@ -23,8 +23,8 @@ const homepage = () => {
                 Play Chess in A New Way You Haven't Thought Of Before
               </h1>
               <p className="lead py-3">
-                [PLACEHOLDER NAME] is a new version of chess that includes [# of
-                gamemodes] different ways to play. Sign up now, for free!
+                CWNR is a new version of chess that includes currently only one gamemode.
+                 different ways to play. Sign up now, for free!
               </p>
               <button className="btn btn-primary d-inline-flex flex-row align-items-center">
                 <a href="login" style={{ color: "black" }}>
@@ -42,7 +42,7 @@ const homepage = () => {
           <div className="row">
             <div className="col-md-6 mx-auto text-center">
               <h2 className="heading-black">
-                [PLACEHOLDER NAME] is an interesting take on chess.
+                CWNR is an interesting take on chess.
               </h2>
               <p className="text-muted lead">
                 We aim to entertain with these game modes.
@@ -60,7 +60,7 @@ const homepage = () => {
                   </div>
                   <h5>Choose your backrank.</h5>
                   <p className="text-muted">
-                    In our {"{"}placeholder{"}"} game mode, you can have a different
+                    In our Backrank Battle game mode, you can have a different
                     back rank.
                   </p>
                 </div>
@@ -72,7 +72,7 @@ const homepage = () => {
                   </div>
                   <h5>Manage your play points.</h5>
                   <p className="text-muted">
-                    In our {"{"}placeholder{"}"} game mode, you have to think about
+                    In our Play Point Pummel game mode, you have to think about
                     what to do with the points you get from obtaining pieces and
                     where you choose to place them.
                   </p>
@@ -85,7 +85,7 @@ const homepage = () => {
                   </div>
                   <h5>Capture the golden piece.</h5>
                   <p className="text-muted">
-                    In our {"{"}placeholder{"}"} game mode, each side has a gold
+                    In our Golden Goose game mode, each side has a gold
                     piece, that if taken, allows that player to upgrade to a piece
                     of their choice.
                   </p>
@@ -96,11 +96,10 @@ const homepage = () => {
                       <span data-feather="globe" width={35} height={35} />
                     </div>
                   </div>
-                  <h5>Aim to be the best.</h5>
+                  <h5>Have fun in a new way with friends!</h5>
                   <p className="text-muted">
-                    We have a ranking system, meant to be for those who want to get
-                    better, (of course only appliable when there are actually people
-                    playing this) and become one of the best.
+                    We hope to have multiplayer fully functional so that players can 
+                    play against one another and enjoy the new rules we have created.
                   </p>
                 </div>
               </div>
@@ -140,31 +139,31 @@ const homepage = () => {
                 </div>
                 <div className="card">
                   <div className="card-body">
-                    <h3 className="card-title pt-3">Play Point Pummel</h3>
-                    <h2 className="card-title text-info mb-0 pt-4">RANKED</h2>
+                    <h3 className="card-title pt-3">Play Point Pummel [WIP]</h3>
+                    <h2 className="card-title text-info mb-0 pt-4">CASUAL</h2>
                     <ul className="list-unstyled pricing-list">
                       <li>Play point system</li>
                       <li>Based on chess piece worth</li>
                       <li>Place pieces on your half of the board</li>
                       <li>10 play point limit</li>
                     </ul>
-                    <a href="demo" className="btn btn-info">
+                    {/* <a href="demo" className="btn btn-info">
                       See Demo
-                    </a>
+                    </a> */}
                   </div>
                 </div>
                 <div className="card">
                   <div className="card-body">
-                    <h3 className="card-title pt-3">Golden Goose</h3>
+                    <h3 className="card-title pt-3">Golden Goose [WIP]</h3>
                     <h2 className="card-title text-primary mb-0 pt-4">CASUAL</h2>
                     <ul className="list-unstyled pricing-list">
                       <li>Random backrank/pawn turns into a golden piece</li>
                       <li>Player taking golden piece gets to promote that piece</li>
                       <li>Only one gets to be a golden piece per side</li>
                     </ul>
-                    <a href="demo" className="btn btn-primary">
+                    {/* <a href="demo" className="btn btn-primary">
                       See Demo
-                    </a>
+                    </a> */}
                   </div>
                 </div>
               </div>
@@ -222,7 +221,9 @@ const homepage = () => {
                 </div>
                 <div className="col-md-6 mb-5">
                   <h6>How can I contact you?</h6>
-                  <p className="text-muted">You can contact us at [email]!</p>
+                  <p className="text-muted">You can't! However if you want to make suggestions or make open-source changes yourself,
+                  you can find the repository 
+                  <a href="http://github.com/jareddls/CWNR"> here</a>.</p>
                 </div>
               </div>
             </div>
@@ -271,12 +272,13 @@ const homepage = () => {
                   <a className="card-title mb-2">
                     <h5>Sami Bajwa</h5>
                   </a>
+                  <br/>
                   <a className="card-title mb-2">
                     <h5>CIRCLE IMAGE IF POSSIBLE</h5>
                   </a>
+                  <br/>
                   <p className="card-text">
-                    Nam liber tempor cum soluta nobis eleifend option congue nihil
-                    imper, consectetur adipiscing elit.
+                  CSUF Undergraduate, Bachelor of Computer Science 2023
                   </p>
                 </div>
               </div>
@@ -287,12 +289,13 @@ const homepage = () => {
                   <a className="card-title mb-2">
                     <h5>Michael Ewy</h5>
                   </a>
-                  <a className="card-title mb-2">
-                    <h5>CIRCLE IMAGE IF POSSIBLE</h5>
-                  </a>
+                  <br/>
+                  <div className="circular_image">
+                    <img src="/assets/pfp/ewy.png" />
+                  </div>
+                  <br/>
                   <p className="card-text">
-                    Nam liber tempor cum soluta nobis eleifend option congue nihil
-                    imper, consectetur adipiscing elit.{" "}
+                    CSUF Undergraduate, Expected Bachelor of Computer Science 2024
                   </p>
                 </div>
               </div>
@@ -305,20 +308,15 @@ const homepage = () => {
         <div className="container">
           <div className="row">
             <div className="col-sm-5 mr-auto">
-              <h5>About [PLACEHOLDER NAME]</h5>
+              <h5>About CWNR</h5>
               <p className="text-muted">
                 Group of developers for a Software Engineering course to understand
                 the develoment lifecycle.
               </p>
               <ul className="list-inline social social-sm">
                 <li className="list-inline-item">
-                  <a href="">
-                    <i className="fa fa-facebook" />
-                  </a>
-                </li>
-                <li className="list-inline-item">
-                  <a href="">
-                    <i className="fa fa-twitter" />
+                  <a href="http://github.com/jareddls/CWNR">
+                    <i className="fa fa-github" />
                   </a>
                 </li>
                 {/* <li class="list-inline-item">
