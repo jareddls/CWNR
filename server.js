@@ -5,23 +5,46 @@ import { Server } from 'socket.io';
 const app = express();
 const server = http.createServer(app);
 
-const WHITE_PLAYER = 'white';
+const WHITE_PLAYER = 'white'
 const BLACK_PLAYER = 'black'
+
+// rest of the code
 
 let currentPlayers = [];
 
-function assignPlayerColor(socket) {
-  let playerColor;
-  if (currentPlayers.length === 0) {
+function assignPlayerColor(socket, roomCode) {
+  let playerColor = '';
+
+  // console.log(socket.id)
+  // console.log(currentPlayers[0])  
+
+  // remove any old socket objects from currentPlayers array
+  currentPlayers = currentPlayers.filter(s => s.socket.id !== socket.id);
+
+  // check if socket is already assigned a color
+  const assignedSocket = currentPlayers.find(s => s.socket.id === socket.id);
+  if (assignedSocket) {
+    socket.color = assignedSocket.color;
+    socket.emit('colorAssigned', assignedSocket.color);
+    return;
+  }
+
+  // assign color to socket
+  const whitePlayer = currentPlayers.find(s => s.color === WHITE_PLAYER && s.roomCode === roomCode);
+  const blackPlayer = currentPlayers.find(s => s.color === BLACK_PLAYER && s.roomCode === roomCode);
+
+  if (!whitePlayer) {
     playerColor = WHITE_PLAYER;
-  } else if (currentPlayers.length === 1) {
+  } else if (!blackPlayer) {
     playerColor = BLACK_PLAYER;
   } else {
     socket.emit('message', 'Sorry, game is full!');
     return;
   }
-  currentPlayers.push(playerColor);
+
+  socket.color = playerColor
   socket.emit('colorAssigned', playerColor);
+  currentPlayers.push({ socket, color: playerColor, roomCode });
 }
 
 const io = new Server(server, {
@@ -40,9 +63,11 @@ app.use((req, res, next) => {
 io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`);
 
+
   socket.on('joinRoom', (roomCode) => {
     console.log(`${socket.id} is joining room ${roomCode}`);
-
+    assignPlayerColor(socket, roomCode)
+    console.log(`${socket.id} is color ${socket.color}`)
     socket.join(roomCode);
 
     io.to(roomCode).emit('roomJoined', { roomCode });
@@ -51,8 +76,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('roomJoined', (roomCode) => {
-    console.log('Room joined: ' + {roomCode} )
-  }) 
+    console.log('Room joined: ' + { roomCode })
+  })
 
   socket.on('move', (move) => {
     // console.log("called?")

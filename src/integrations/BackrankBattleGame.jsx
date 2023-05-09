@@ -2,8 +2,12 @@ import React, { Component, useState, useEffect } from "react";
 import io from 'socket.io-client';
 import PropTypes from "prop-types";
 import { Chess } from "chess.js"; 
+// import { WHITE_PLAYER, BLACK_PLAYER } from '../../server';
 
 import Chessboard from "chessboardjsx";
+
+const WHITE_PLAYER = 'white'
+const BLACK_PLAYER = 'black'
 
 class HumanVsHuman extends Component {
   static propTypes = { children: PropTypes.func };
@@ -13,18 +17,21 @@ class HumanVsHuman extends Component {
     squareStyles: {},
     pieceSquare: "",
     square: "",
-    history: []
+    history: [],
+    currentPlayer: WHITE_PLAYER
   };
 
   componentDidMount() {
     this.game = new Chess();
     //dont change
     this.socket = io('http://localhost:3000');
+    
 
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get('roomCode');
     
     this.socket.on('connect', () => {
+      console.log(`This player is: ${this.socket.id}`)
       this.socket.emit('joinRoom', roomCode);
     });
 
@@ -40,6 +47,11 @@ class HumanVsHuman extends Component {
         });
       }
     });
+  }
+
+  componentWillUnmount() {
+    this.socket.disconnect();
+    this.socket = null;
   }
 
   updateFen = () => {
@@ -127,6 +139,14 @@ class HumanVsHuman extends Component {
   onDrop = ({ sourceSquare, targetSquare }) => {
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get('roomCode');
+
+    console.log('current player:', this.state.currentPlayer); // add this line
+    console.log('socket color:', this.socket.color); // add this line
+
+
+    if (this.socket.color !== this.state.currentPlayer) {
+      return;
+    }
     
     let move = this.game.move({
       from: sourceSquare,
@@ -139,10 +159,11 @@ class HumanVsHuman extends Component {
     this.setState(({ history, pieceSquare }) => ({
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
-      squareStyles: squareStyling({ pieceSquare, history })
+      squareStyles: squareStyling({ pieceSquare, history }),
+      currentPlayer: this.state.currentPlayer === WHITE_PLAYER ? BLACK_PLAYER : WHITE_PLAYER
     }));
  
-    console.log("doing an emit")
+    // console.log("doing an emit")
     this.socket.emit('move', { from: sourceSquare, to: targetSquare, roomCode });
     this.socket.to(roomCode).emit('move', { from: sourceSquare, to: targetSquare, roomCode });
     
@@ -180,6 +201,10 @@ class HumanVsHuman extends Component {
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get('roomCode');
     
+    if (this.socket.color !== this.state.currentPlayer) {
+      return;
+    }
+
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
       pieceSquare: square
@@ -196,7 +221,8 @@ class HumanVsHuman extends Component {
     this.setState({
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
-      pieceSquare: ""
+      pieceSquare: "",
+      currentPlayer: this.state.currentPlayer === WHITE_PLAYER ? BLACK_PLAYER : WHITE_PLAYER
     });
 
     this.socket.emit('move', { from: this.state.pieceSquare, to: square, roomCode });
