@@ -62,8 +62,8 @@ class HumanVsHuman extends Component {
         squareStyles: squareStyling({ pieceSquare: "", history: this.game.history({ verbose: true }) })
       });
 
-      
-      // this.game.load(fen)
+      this.game.load(givenFen);
+      console.log(this.game.fen())
     })
   }
 
