@@ -1,13 +1,15 @@
 import React, { Component, useState, useEffect } from "react";
 import io from 'socket.io-client';
 import PropTypes from "prop-types";
-import { Chess } from "chess.js"; 
+import { Chess } from "chess.js";
+import Button from '../components/Button'
 // import { WHITE_PLAYER, BLACK_PLAYER } from '../../server';
 
 import Chessboard from "chessboardjsx";
 
-const WHITE_PLAYER = 'white'
-const BLACK_PLAYER = 'black'
+// const WHITE_PLAYER = 'white'
+// const BLACK_PLAYER = 'black'
+// let playerColor = '';
 
 class HumanVsHuman extends Component {
   static propTypes = { children: PropTypes.func };
@@ -18,27 +20,29 @@ class HumanVsHuman extends Component {
     pieceSquare: "",
     square: "",
     history: [],
-    currentPlayer: WHITE_PLAYER
+    // currentPlayer: WHITE_PLAYER
   };
 
   componentDidMount() {
     this.game = new Chess();
     //dont change
     this.socket = io('http://localhost:3000');
-    
+
 
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get('roomCode');
-    
+
     this.socket.on('connect', () => {
       console.log(`This player is: ${this.socket.id}`)
       this.socket.emit('joinRoom', roomCode);
     });
 
+    //important dont touch
     this.socket.on('move', (move) => {
+      console.log('move is happening')
       const { from, to } = move;
       const moveResult = this.game.move({ from, to });
-  
+
       if (moveResult) {
         this.setState({
           fen: this.game.fen(),
@@ -47,6 +51,20 @@ class HumanVsHuman extends Component {
         });
       }
     });
+
+    this.socket.on('updateBackrank', ( {givenFen} ) => {
+      // const { dFen } = givenFen
+      console.log(givenFen)
+      console.log(this.game.fen())
+      this.setState({
+        fen: givenFen,
+        history: this.game.history({ verbose: true }),
+        squareStyles: squareStyling({ pieceSquare: "", history: this.game.history({ verbose: true }) })
+      });
+
+      
+      // this.game.load(fen)
+    })
   }
 
   componentWillUnmount() {
@@ -55,53 +73,93 @@ class HumanVsHuman extends Component {
   }
 
   updateFen = () => {
+    console.log("called updateFen")
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get('roomCode');
 
     const points = {
       'b': 3,
       'r': 5,
       'q': 9,
       'n': 3,
+      'k': 0
     };
 
     let whitePoints = 0
     let blackPoints = 0
 
-    let blackBackrank = prompt("Enter black backrank:")
+    let blackBackrank = ""
+    let whiteBackrank = ""
+    
+    let blackSum = 0
+    let whiteSum = 0
+
+    while (blackBackrank.length > 8 || !blackBackrank.includes('k') || blackPoints > 32 || blackSum > 8) {
+      blackSum = 0
+
+      blackBackrank = prompt("Enter black backrank:")
+      blackPoints = 0
+  
+      for (let i = 0; i < blackBackrank.length; i++) {
+        const piece = blackBackrank[i].toLowerCase();
+  
+        if (piece in points) {
+          blackPoints += points[piece];
+        } else if (piece.match(/^(?![brqnk])[a-z]$/i)){
+          blackPoints = 1000;
+          break;
+        }
+
+        if (!isNaN(piece)) {
+          blackSum += parseInt(piece)
+        }
+        else {
+          blackSum++
+        }
+      }
+  
+      console.log("black points: " + blackPoints)
+    }
+
+    while (whiteBackrank.length > 8 || !whiteBackrank.includes('k') || whitePoints > 32 || whiteSum > 8) {
+      whiteSum = 0
+
+      whiteBackrank = prompt("Enter white backrank:")
+      whitePoints = 0
+  
+      for (let i = 0; i < whiteBackrank.length; i++) {
+        const piece = whiteBackrank[i].toLowerCase();
+  
+        if (piece in points) {
+          whitePoints += points[piece];
+        } else if (piece.match(/^(?![brqnk])[a-z]$/i)){
+          whitePoints = 1000;
+          break;
+        }
+
+        if (!isNaN(piece)) {
+          whiteSum += parseInt(piece)
+        }
+        else {
+          whiteSum++
+        }
+      }
+  
+      console.log("white points: " + whitePoints)
+    }
+
     const afterBlack = "/pppppppp/8/8/8/8/PPPPPPPP/"
-    let whiteBackrank = prompt("Enter white backrank:")
     const afterWhite = " w KQkq - 0 1"
 
-    for (let i = 0; i < blackBackrank.length; i++) {
-      const piece = blackBackrank[i].toLowerCase();
-
-      if (piece in points) {
-        blackPoints += points[piece];
-      }
-    }
-
-    for (let i = 0; i < whiteBackrank.length; i++) {
-      const piece = whiteBackrank[i].toLowerCase();
-
-      if (piece in points) {
-        whitePoints += points[piece];
-      }
-    }
-
-    console.log("black points: " + blackPoints)
-    console.log("white points: " + whitePoints)
-
-    if (blackPoints > 32) {
-      blackBackrank = "8"
-    }
-
-    if (whitePoints > 32) {
-      whiteBackrank = "8"
-    }
-
-    let createdFenString = blackBackrank + afterBlack + whiteBackrank + afterWhite
+    let createdFenString = blackBackrank.toLowerCase() + afterBlack + whiteBackrank.toUpperCase() + afterWhite
+  
 
     this.setState({ fen: createdFenString });
     this.game = new Chess(createdFenString);
+
+    // console.log(createdFenString)
+    this.socket.emit('updateBackrank', {givenFen: createdFenString, roomCode});
+    
   }
 
   removeHighlightSquare = () => {
@@ -140,18 +198,10 @@ class HumanVsHuman extends Component {
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get('roomCode');
 
-    console.log('current player:', this.state.currentPlayer); // add this line
-    console.log('socket color:', this.socket.color); // add this line
-
-
-    if (this.socket.color !== this.state.currentPlayer) {
-      return;
-    }
-    
     let move = this.game.move({
       from: sourceSquare,
       to: targetSquare,
-      promotion: "q" 
+      promotion: "q"
     });
 
     if (move === null) return;
@@ -160,13 +210,12 @@ class HumanVsHuman extends Component {
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history }),
-      currentPlayer: this.state.currentPlayer === WHITE_PLAYER ? BLACK_PLAYER : WHITE_PLAYER
     }));
- 
+
     // console.log("doing an emit")
     this.socket.emit('move', { from: sourceSquare, to: targetSquare, roomCode });
-    this.socket.to(roomCode).emit('move', { from: sourceSquare, to: targetSquare, roomCode });
-    
+    // this.socket.to(roomCode).emit('move', { from: sourceSquare, to: targetSquare, roomCode });
+
   };
 
   onMouseOverSquare = square => {
@@ -197,13 +246,9 @@ class HumanVsHuman extends Component {
   };
 
   onSquareClick = square => {
-    console.log("yo")
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get('roomCode');
-    
-    if (this.socket.color !== this.state.currentPlayer) {
-      return;
-    }
+
 
     this.setState(({ history }) => ({
       squareStyles: squareStyling({ pieceSquare: square, history }),
@@ -213,7 +258,7 @@ class HumanVsHuman extends Component {
     let move = this.game.move({
       from: this.state.pieceSquare,
       to: square,
-      promotion: "q" 
+      promotion: "q"
     });
 
     if (move === null) return;
@@ -222,11 +267,11 @@ class HumanVsHuman extends Component {
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
       pieceSquare: "",
-      currentPlayer: this.state.currentPlayer === WHITE_PLAYER ? BLACK_PLAYER : WHITE_PLAYER
+      // currentPlayer: this.state.currentPlayer === WHITE_PLAYER ? BLACK_PLAYER : WHITE_PLAYER
     });
 
     this.socket.emit('move', { from: this.state.pieceSquare, to: square, roomCode });
-    this.socket.to(roomCode).emit('move', { from: this.state.pieceSquare, to: square, roomCode })
+    // this.socket.to(roomCode).emit('move', { from: this.state.pieceSquare, to: square, roomCode })
   };
 
   onSquareRightClick = square =>
@@ -260,8 +305,15 @@ export default function WithMoveValidation() {
   const urlParams = new URLSearchParams(window.location.search);
   const roomCode = urlParams.get('roomCode');
 
+  const [orientation, setOrientation] = useState('white')
+
+  const handleOrientation = (event) => {
+    setOrientation(orientation === 'white' ? 'black' : 'white');
+  };
+
   return (
     <div>
+      <Button text = "Flip Board" onClick={handleOrientation}/>
       <p>Room code: {roomCode}</p>
       <HumanVsHuman>
         {({
@@ -291,12 +343,16 @@ export default function WithMoveValidation() {
             onDragOverSquare={onDragOverSquare}
             onSquareClick={onSquareClick}
             onSquareRightClick={onSquareRightClick}
+            orientation={orientation}
           />
         )}
       </HumanVsHuman>
+      
     </div>
   );
 }
+
+
 
 const squareStyling = ({ pieceSquare, history }) => {
   const sourceSquare = history.length && history[history.length - 1].from;

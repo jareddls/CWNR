@@ -15,9 +15,6 @@ let currentPlayers = [];
 function assignPlayerColor(socket, roomCode) {
   let playerColor = '';
 
-  // console.log(socket.id)
-  // console.log(currentPlayers[0])  
-
   // remove any old socket objects from currentPlayers array
   currentPlayers = currentPlayers.filter(s => s.socket.id !== socket.id);
 
@@ -63,6 +60,9 @@ app.use((req, res, next) => {
 io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`);
 
+  socket.on('message', (message) => {
+    console.log(message)
+  })
 
   socket.on('joinRoom', (roomCode) => {
     console.log(`${socket.id} is joining room ${roomCode}`);
@@ -83,6 +83,12 @@ io.on('connection', (socket) => {
     // console.log("called?")
     const { from, to, roomCode } = move;
     io.to(roomCode).emit('move', { from, to });
+  });
+
+  socket.on('updateBackrank', (fen) => {
+    const { givenFen, roomCode } = fen
+    // console.log("called?")
+    io.to(roomCode).emit('updateBackrank', { givenFen });
   });
 
   socket.on('disconnect', () => {
