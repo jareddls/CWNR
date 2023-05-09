@@ -94,7 +94,7 @@ class HumanVsHuman extends Component {
     let blackSum = 0
     let whiteSum = 0
 
-    while (blackBackrank.length > 8 || !blackBackrank.includes('k') || blackPoints > 32 || blackSum > 8) {
+    while (blackBackrank.length > 8 || !blackBackrank.toLowerCase().includes('k') || blackPoints > 32 || blackSum != 8) {
       blackSum = 0
 
       blackBackrank = prompt("Enter black backrank:")
@@ -121,7 +121,7 @@ class HumanVsHuman extends Component {
       console.log("black points: " + blackPoints)
     }
 
-    while (whiteBackrank.length > 8 || !whiteBackrank.includes('k') || whitePoints > 32 || whiteSum > 8) {
+    while (whiteBackrank.length > 8 || !whiteBackrank.toLowerCase().includes('k') || whitePoints > 32 || whiteSum != 8) {
       whiteSum = 0
 
       whiteBackrank = prompt("Enter white backrank:")
