@@ -132,7 +132,7 @@ const homepage = () => {
                       <li>Set limit of points to prevent overpowered setups</li>
                       <li>No castling in this mode</li>
                     </ul>
-                    <a href="demo" className="btn btn-primary">
+                    <a href="backrank_demo" className="btn btn-primary">
                       See Demo
                     </a>
                   </div>
@@ -273,9 +273,9 @@ const homepage = () => {
                     <h5>Sami Bajwa</h5>
                   </a>
                   <br/>
-                  <a className="card-title mb-2">
-                    <h5>CIRCLE IMAGE IF POSSIBLE</h5>
-                  </a>
+                  <div className="circular_image">
+                    <img src="/assets/pfp/sbajwa.jpg" />
+                  </div>
                   <br/>
                   <p className="card-text">
                   CSUF Undergraduate, Bachelor of Computer Science 2023
@@ -352,7 +352,7 @@ const homepage = () => {
           </div>
           <div className="row mt-5">
             <div className="col-12 text-muted text-center small-xl">
-              © 2023 [PLACEHOLDER] - All Rights Reserved
+              © 2023 CWNR - All Rights Reserved
             </div>
           </div>
         </div>

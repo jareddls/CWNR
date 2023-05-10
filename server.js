@@ -46,16 +46,17 @@ function assignPlayerColor(socket, roomCode) {
 
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173'],
-  },
+    origin: "http://localhost:5173", // replace with your client-side application's URL
+    methods: ["GET", "POST"],
+  }
 });
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//   next();
+// });
 
 io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`);

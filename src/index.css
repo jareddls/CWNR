@@ -8062,6 +8062,13 @@ footer h5 {
   margin-bottom: 2rem;
 }
 
+.logout {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+}
+
 @media screen and (max-width: 768px) {
   .switcher-wrap {
     display: none; } }
