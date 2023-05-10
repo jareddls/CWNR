@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "devStart": "nodemon server.js"
+    "devStart": "nodemon firebase.js",
+    "socketStart": "nodemon server.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -15,16 +16,19 @@
     "chessboardjsx": "2.0.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "firebase": "^9.19.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.9.0"
+    "react-router-dom": "^6.9.0",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^3.1.0",
     "dotenv": "^16.0.3",
-    "nodemon": "^2.0.21",
+    "nodemon": "^2.0.22",
     "vite": "^4.2.0"
   }
 }

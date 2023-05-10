@@ -1,68 +1,105 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-const app = express()
+import http from 'http';
+import { Server } from 'socket.io';
 
-app.use(bodyParser.json())
-app.use(cors())
+const app = express();
+const server = http.createServer(app);
 
-const database = {
-    users: [
-        {
-            id: '123',
-            name: 'John',
-            email: 'john@gmail.com',
-            password: 'cookies',
-            entries: '0',
-            joined: new Date()
-        },
-        {
-            id: '124',
-            name: 'Sally',
-            email: 'sally@gmail.com',
-            password: 'bananas',
-            entries: '0',
-            joined: new Date()
-        }
-    ]
+const WHITE_PLAYER = 'white'
+const BLACK_PLAYER = 'black'
+
+// rest of the code
+
+let currentPlayers = [];
+
+function assignPlayerColor(socket, roomCode) {
+  let playerColor = '';
+
+  // remove any old socket objects from currentPlayers array
+  currentPlayers = currentPlayers.filter(s => s.socket.id !== socket.id);
+
+  // check if socket is already assigned a color
+  const assignedSocket = currentPlayers.find(s => s.socket.id === socket.id);
+  if (assignedSocket) {
+    socket.color = assignedSocket.color;
+    socket.emit('colorAssigned', assignedSocket.color);
+    return;
+  }
+
+  // assign color to socket
+  const whitePlayer = currentPlayers.find(s => s.color === WHITE_PLAYER && s.roomCode === roomCode);
+  const blackPlayer = currentPlayers.find(s => s.color === BLACK_PLAYER && s.roomCode === roomCode);
+
+  if (!whitePlayer) {
+    playerColor = WHITE_PLAYER;
+  } else if (!blackPlayer) {
+    playerColor = BLACK_PLAYER;
+  } else {
+    socket.emit('message', 'Sorry, game is full!');
+    return;
+  }
+
+  socket.color = playerColor
+  socket.emit('colorAssigned', playerColor);
+  currentPlayers.push({ socket, color: playerColor, roomCode });
 }
 
-app.get('/', (req, res) => {
-    res.send(database)
-})
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // replace with your client-side application's URL
+    methods: ["GET", "POST"],
+  }
+});
 
-app.listen(3000, ()=> {
-    console.log("app is running on port 3000")
-})
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//   next();
+// });
 
+io.on('connection', (socket) => {
+  console.log(`New client connected: ${socket.id}`);
 
-app.post('/login', (req, res) => {
-    const { email, password } = req.body
-    if (email == database.users[0].email && password == database.users[0].password) {
-        res.json("logged in")
-    } else {
-         res.status(400).json("error logging in")
+  socket.on('message', (message) => {
+    console.log(message)
+  })
+
+  socket.on('joinRoom', (roomCode) => {
+    console.log(`${socket.id} is joining room ${roomCode}`);
+    assignPlayerColor(socket, roomCode)
+    console.log(`${socket.id} is color ${socket.color}`)
+    socket.join(roomCode);
+
+    io.to(roomCode).emit('roomJoined', { roomCode });
+
+    console.log(io.sockets.adapter.rooms.get(roomCode))
+  });
+
+  socket.on('roomJoined', (roomCode) => {
+    console.log('Room joined: ' + { roomCode })
+  })
+
+  socket.on('move', (move) => {
+    // console.log("called?")
+    const { from, to, roomCode } = move;
+    io.to(roomCode).emit('move', { from, to });
+  });
+
+  socket.on('updateBackrank', (fen) => {
+    const { givenFen, roomCode } = fen
+    // console.log("called?")
+    io.to(roomCode).emit('updateBackrank', { givenFen });
+  });
+
+  socket.on('disconnect', () => {
+    const index = currentPlayers.indexOf(socket.color);
+    if (index !== -1) {
+      currentPlayers.splice(index, 1);
     }
-})
+    console.log(`Client ${socket.id} disconnected`);
+  });
+});
 
-app.post('/register', (req, res) => {
-    const { email, name, password } = req.body
-    database.users.push({
-            id: '125',
-            name: name,
-            email: email,
-            password: password,
-            entries: '0',
-            joined: new Date()
-    })
-    res.json(database.users[database.users.length-1])
-})
-
-/*
-/ --> res = this is working
-/login --> POST = returns success/fail
-/register --> POST = returns new user object that was made
-/profile/:userId --> GET = returns the user object that's being used
-
-
-*/
+const port = process.env.PORT || 3000;
+server.listen(port, () => console.log(`Listening on port ${port}`));

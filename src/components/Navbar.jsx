@@ -26,9 +26,9 @@ const navbar = () => {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarCollapse">
                         <ul className="navbar-nav ml-auto">
-                            <li className="nav-item" onClick={()=> setLoggedIn(!loggedIn)}>
+                            <li className="nav-item" >
                                 <a className="nav-link page-scroll" href="#features">
-                                    {loggedIn ? "Features" : "bus"}
+                                    Features
                                 </a>
                             </li>
                             <li className="nav-item">

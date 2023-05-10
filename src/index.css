@@ -8013,6 +8013,62 @@ footer h5 {
   transform: translate(-50%, -50%);
 }
 
+.cwnr_header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* adjust the height as needed */
+}
+
+.top_middle {
+  font-size: 5rem; /* adjust the font size as needed */
+  font-weight: bold;
+  text-align: center;
+}
+
+.button_container {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin-top: 350px;
+  margin-left: 150px;
+  margin-right: 150px;
+}
+
+.input-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.label-text {
+  font-size: 20px;
+  margin-top: 15%;
+  margin-bottom: 5px;
+  color: #ffeba7;
+}
+
+.input-box {
+  width: 300px;
+  height: 50px;
+  font-size: 16px;
+  padding: 10px;
+  border: 2px solid #ffeba7;
+  border-radius: 5px;
+  background-color: #1f2029;
+  color: #ffeba7;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.logout {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+}
+
 @media screen and (max-width: 768px) {
   .switcher-wrap {
     display: none; } }

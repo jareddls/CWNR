@@ -1,12 +1,33 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import Button from '../components/Button'
+
+// NEW CODE
+const logout = async () => {
+
+  // await signOut(auth);
+  localStorage.removeItem("isLoggedIn");
+  localStorage.setItem('isLoggedIn', false);
+  window.location.href = "login"
+};
+// NEW CODE
 
 const home = () => {
   return (
-    <div className='centered'>
-      <Link to='/game'> MANUAL GAME</Link>
+    <div>
+      <header className="cwnr_header">
+        <h1 className="top_middle">CWNR</h1>
+
+        {/* NEW CODE */}
+        <button onClick={logout} className="btn logout">LOGOUT</button>
+        {/* NEW CODE */}
+      </header>
       <br/>
-      <Link to='/demo'> DEMO GAME</Link>
+      <div className="button_container">
+        <Button text="MANUAL GAME" url="/game"/>
+        <Button text="DEMO GAME" url="/demo"/>
+        <Button text="BACKRANK BATTLE" url="/custom"/>
+      </div>
+      
     </div>
   )
 }
